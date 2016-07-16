@@ -6,7 +6,7 @@ ICU             56.1
 libxml2        	2.9.4
 libxslt         1.1.29
 libjpeg-turbo   1.4.2
-libpng          1.6.19
+libpng          1.6.23
 objc4           493.11
 OpenCFLite      635.21
 OpenSSL         1.0.2h
