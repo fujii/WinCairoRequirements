@@ -4,13 +4,14 @@ $(top_builddir)/xsltproc/xsltproc:
 	@(cd ../../../xsltproc ; $(MAKE) xsltproc)
 
 EXTRA_DIST = 						\
-	md5.1.out      md5.1.xml      md5.1.xsl
+	crypt.1.out	crypt.1.xml	crypt.1.xsl	\
+	hash.1.out	hash.1.xml	hash.1.xsl
 
 CLEANFILES = .memdump
 
 valgrind:
 	@echo '## Running the regression tests under Valgrind'
-	$(MAKE) CHECKER='valgrind -q' tests
+	$(MAKE) CHECKER='libtool --mode=execute valgrind -q --leak-check=full' tests
 
 test tests: $(top_builddir)/xsltproc/xsltproc
 	@echo '## Running exslt crypto tests'

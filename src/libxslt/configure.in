@@ -11,7 +11,7 @@ dnl libexslt is an extension
 dnl
 LIBXSLT_MAJOR_VERSION=1
 LIBXSLT_MINOR_VERSION=1
-LIBXSLT_MICRO_VERSION=28
+LIBXSLT_MICRO_VERSION=29
 PACKAGE=libxslt
 LIBEXSLT_MAJOR_VERSION=0
 LIBEXSLT_MINOR_VERSION=8
@@ -235,6 +235,7 @@ dnl
 
 AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h ansidecl.h)
 AC_CHECK_HEADERS(sys/timeb.h time.h sys/stat.h sys/select.h stdarg.h)
+AC_CHECK_HEADERS(errno.h)
 AC_CHECK_FUNCS(stat _stat)
 AC_CHECK_FUNC(pow, , AC_CHECK_LIB(m, pow,
   [M_LIBS="-lm"; AC_DEFINE([HAVE_POW],[], [Define if pow is there])]))
@@ -431,7 +432,7 @@ if [[ "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XSLT" ]] || \
     then
 	with_mem_debug="yes"
     fi
-    CFLAGS="-Wall -g -O -ansi -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline "
+    CFLAGS="-Wall -g -O -ansi -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat=2 -Wmissing-format-attribute -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline "
 fi
 
 AC_ARG_WITH(debug, [  --with-debug            Add the debugging code (on)])
@@ -525,7 +526,7 @@ if test "${GCC}" != "yes" ; then
                ;;
     esac
 else
-    CFLAGS="${CFLAGS} -Wall"
+    CFLAGS="${CFLAGS} -Wall -Wformat=2 -Wmissing-format-attribute"
     case "${host}" in
           alpha*-*-linux* )
 	       CFLAGS="${CFLAGS} -mieee"
@@ -618,7 +619,16 @@ AM_CONDITIONAL(WITH_MODULES, test "$WITH_MODULES" = "1")
 dnl
 dnl setup default module path
 dnl
-LIBXSLT_DEFAULT_PLUGINS_PATH="$libdir/libxslt-plugins"
+expanded_libdir=$(
+    test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+    test "x$exec_prefix" = xNONE && exec_prefix="$prefix"
+    while test "$libdir_old" != "$libdir"; do
+      libdir_old="$libdir"
+      eval libdir="$libdir"
+    done
+    echo "$libdir"
+)
+LIBXSLT_DEFAULT_PLUGINS_PATH="$expanded_libdir/libxslt-plugins"
 AC_SUBST(LIBXSLT_DEFAULT_PLUGINS_PATH)
 
 WIN32_EXTRA_LIBADD=
@@ -707,6 +717,7 @@ tests/exslt/Makefile
 tests/exslt/common/Makefile
 tests/exslt/functions/Makefile
 tests/exslt/math/Makefile
+tests/exslt/saxon/Makefile
 tests/exslt/sets/Makefile
 tests/exslt/strings/Makefile
 tests/exslt/date/Makefile

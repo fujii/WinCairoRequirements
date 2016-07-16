@@ -7,6 +7,7 @@
  */
 
 #include "libxslt/libxslt.h"
+#include "libxslt/xsltconfig.h"
 #include "libexslt/exslt.h"
 #include <stdio.h>
 #ifdef HAVE_STRING_H
@@ -57,9 +58,6 @@
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <winsock2.h>
 #define gettimeofday(p1,p2)
-#if _MSC_VER < 1900
-#define snprintf _snprintf
-#endif
 #endif /* _MS_VER */
 #else /* WIN32 */
 #if defined(HAVE_SYS_TIME_H)
@@ -140,7 +138,7 @@ xmlExternalEntityLoader defaultEntityLoader = NULL;
 static xmlParserInputPtr
 xsltprocExternalEntityLoader(const char *URL, const char *ID,
 			     xmlParserCtxtPtr ctxt) {
-    xmlParserInputPtr ret;
+    xmlParserInputPtr ret = NULL;
     warningSAXFunc warning = NULL;
 
     int i;
@@ -182,7 +180,8 @@ xsltprocExternalEntityLoader(const char *URL, const char *ID,
 	newURL = xmlStrcat(newURL, (const xmlChar *) "/");
 	newURL = xmlStrcat(newURL, (const xmlChar *) lastsegment);
 	if (newURL != NULL) {
-	    ret = defaultEntityLoader((const char *)newURL, ID, ctxt);
+	    if (defaultEntityLoader != NULL)
+		ret = defaultEntityLoader((const char *)newURL, ID, ctxt);
 	    if (ret != NULL) {
 		if (warning != NULL)
 		    ctxt->sax->warning = warning;
@@ -238,6 +237,8 @@ my_gettimeofday(struct timeval *tvp, void *tzp)
 #endif /* HAVE_SYS_TIMEB_H */
 #endif /* !HAVE_GETTIMEOFDAY */
 
+static void endTimer(const char *format, ...) LIBXSLT_ATTR_FORMAT(1,2);
+
 #if defined(HAVE_GETTIMEOFDAY)
 static struct timeval begin, endtime;
 /*
@@ -286,7 +287,7 @@ static void startTimer(void)
 {
     begin=clock();
 }
-static void endTimer(char *format, ...)
+static void endTimer(const char *format, ...)
 {
     long msec;
     va_list ap;
@@ -312,7 +313,7 @@ static void startTimer(void)
    * Do nothing
    */
 }
-static void endTimer(char *format, ...)
+static void endTimer(const char *format, ...)
 {
   /*
    * We cannot do anything because we don't have a timing function
@@ -522,6 +523,7 @@ static void usage(const char *name) {
 #endif
     printf("\t--encoding: the input document character encoding\n");
     printf("\t--param name value : pass a (parameter,value) pair\n");
+    printf("\t       name is a QName or a string of the form {URI}NCName.\n");
     printf("\t       value is an UTF8 XPath expression.\n");
     printf("\t       string values must be quoted like \"'string'\"\n or");
     printf("\t       use stringparam to avoid it\n");
@@ -561,6 +563,10 @@ main(int argc, char **argv)
 
     srand(time(NULL));
     xmlInitMemory();
+
+#if defined(_MSC_VER) && _MSC_VER < 1900
+    _set_output_format(_TWO_DIGIT_EXPONENT);
+#endif
 
     LIBXML_TEST_VERSION
 
