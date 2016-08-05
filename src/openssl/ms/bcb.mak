@@ -18,7 +18,7 @@ OPENSSLDIR=c:\openssl\ssl
 # Set your compiler options
 PLATFORM=BC-NT
 CC=bcc32
-CFLAG=-DWIN32_LEAN_AND_MEAN -q -w-ccc -w-rch -w-pia -w-aus -w-par -w-inl  -c -tWC -tWM -DOPENSSL_SYSNAME_WIN32 -DL_ENDIAN -DDSO_WIN32 -D_stricmp=stricmp -D_strnicmp=strnicmp -O2 -ff -fp -DBN_ASM -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_JPAKE -DOPENSSL_NO_DYNAMIC_ENGINE    
+CFLAG=-DWIN32_LEAN_AND_MEAN -q -w-ccc -w-rch -w-pia -w-aus -w-par -w-inl  -c -tWC -tWM -DOPENSSL_SYSNAME_WIN32 -DL_ENDIAN -DDSO_WIN32 -D_stricmp=stricmp -D_strnicmp=strnicmp -O2 -ff -fp -DBN_ASM -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_SSL2 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_JPAKE -DOPENSSL_NO_WEAK_SSL_CIPHERS -DOPENSSL_NO_DYNAMIC_ENGINE    
 APP_CFLAG=
 LIB_CFLAG=
 SHLIB_CFLAG=
@@ -31,7 +31,7 @@ EX_LIBS=cw32mt.lib import32.lib crypt32.lib ws2_32.lib
 # The OpenSSL directory
 SRC_D=.
 
-LINK=ilink32
+LINK_CMD=ilink32
 LFLAGS=-ap -Tpe -x -Gn 
 RSC=
 
@@ -175,7 +175,7 @@ T_OBJ=$(OBJ_D)\constant_time_test.obj \
 	$(OBJ_D)\evp_test.obj $(OBJ_D)\evp_extra_test.obj $(OBJ_D)\verify_extra_test.obj \
 	$(OBJ_D)\v3nametest.obj $(OBJ_D)\enginetest.obj $(OBJ_D)\wp_test.obj \
 	$(OBJ_D)\srptest.obj $(OBJ_D)\ssltest.obj $(OBJ_D)\heartbeat_test.obj \
-	$(OBJ_D)\clienthellotest.obj $(OBJ_D)\igetest.obj 
+	$(OBJ_D)\clienthellotest.obj $(OBJ_D)\sslv2conftest.obj $(OBJ_D)\igetest.obj 
 
 E_OBJ=$(OBJ_D)\verify.obj \
 	$(OBJ_D)\asn1pars.obj $(OBJ_D)\req.obj $(OBJ_D)\dgst.obj \
@@ -436,7 +436,7 @@ T_EXE=$(TEST_D)\constant_time_test.exe \
 	$(TEST_D)\evp_test.exe $(TEST_D)\evp_extra_test.exe $(TEST_D)\verify_extra_test.exe \
 	$(TEST_D)\v3nametest.exe $(TEST_D)\enginetest.exe $(TEST_D)\wp_test.exe \
 	$(TEST_D)\srptest.exe $(TEST_D)\ssltest.exe $(TEST_D)\heartbeat_test.exe \
-	$(TEST_D)\clienthellotest.exe $(TEST_D)\igetest.exe 
+	$(TEST_D)\clienthellotest.exe $(TEST_D)\sslv2conftest.exe $(TEST_D)\igetest.exe 
 
 E_SHLIB=
 
@@ -1055,6 +1055,9 @@ $(OBJ_D)\heartbeat_test.obj: $(SRC_D)\ssl\heartbeat_test.c
 
 $(OBJ_D)\clienthellotest.obj: $(SRC_D)\ssl\clienthellotest.c
 	$(CC) -o$(OBJ_D)\clienthellotest.obj $(APP_CFLAGS) -c $(SRC_D)\ssl\clienthellotest.c
+
+$(OBJ_D)\sslv2conftest.obj: $(SRC_D)\ssl\sslv2conftest.c
+	$(CC) -o$(OBJ_D)\sslv2conftest.obj $(APP_CFLAGS) -c $(SRC_D)\ssl\sslv2conftest.c
 
 $(OBJ_D)\igetest.obj: $(SRC_D)\test\igetest.c
 	$(CC) -o$(OBJ_D)\igetest.obj $(APP_CFLAGS) -c $(SRC_D)\test\igetest.c
@@ -3292,112 +3295,115 @@ $(OBJ_D)\gost_sign.obj: $(SRC_D)\engines\ccgost\gost_sign.c
 	$(CC) -o$(OBJ_D)\gost_sign.obj  $(LIB_CFLAGS) -c $(SRC_D)\engines\ccgost\gost_sign.c
 
 $(TEST_D)\constant_time_test.exe: $(OBJ_D)\constant_time_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\constant_time_test.obj $(APP_EX_OBJ), $(TEST_D)\constant_time_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\constant_time_test.obj $(APP_EX_OBJ), $(TEST_D)\constant_time_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\md4test.exe: $(OBJ_D)\md4test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\md4test.obj $(APP_EX_OBJ), $(TEST_D)\md4test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\md4test.obj $(APP_EX_OBJ), $(TEST_D)\md4test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\md5test.exe: $(OBJ_D)\md5test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\md5test.obj $(APP_EX_OBJ), $(TEST_D)\md5test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\md5test.obj $(APP_EX_OBJ), $(TEST_D)\md5test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\shatest.exe: $(OBJ_D)\shatest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\shatest.obj $(APP_EX_OBJ), $(TEST_D)\shatest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\shatest.obj $(APP_EX_OBJ), $(TEST_D)\shatest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\sha1test.exe: $(OBJ_D)\sha1test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\sha1test.obj $(APP_EX_OBJ), $(TEST_D)\sha1test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\sha1test.obj $(APP_EX_OBJ), $(TEST_D)\sha1test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\sha256t.exe: $(OBJ_D)\sha256t.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\sha256t.obj $(APP_EX_OBJ), $(TEST_D)\sha256t.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\sha256t.obj $(APP_EX_OBJ), $(TEST_D)\sha256t.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\sha512t.exe: $(OBJ_D)\sha512t.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\sha512t.obj $(APP_EX_OBJ), $(TEST_D)\sha512t.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\sha512t.obj $(APP_EX_OBJ), $(TEST_D)\sha512t.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\mdc2test.exe: $(OBJ_D)\mdc2test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\mdc2test.obj $(APP_EX_OBJ), $(TEST_D)\mdc2test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\mdc2test.obj $(APP_EX_OBJ), $(TEST_D)\mdc2test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\hmactest.exe: $(OBJ_D)\hmactest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\hmactest.obj $(APP_EX_OBJ), $(TEST_D)\hmactest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\hmactest.obj $(APP_EX_OBJ), $(TEST_D)\hmactest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\rmdtest.exe: $(OBJ_D)\rmdtest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\rmdtest.obj $(APP_EX_OBJ), $(TEST_D)\rmdtest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\rmdtest.obj $(APP_EX_OBJ), $(TEST_D)\rmdtest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\destest.exe: $(OBJ_D)\destest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\destest.obj $(APP_EX_OBJ), $(TEST_D)\destest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\destest.obj $(APP_EX_OBJ), $(TEST_D)\destest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\rc2test.exe: $(OBJ_D)\rc2test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\rc2test.obj $(APP_EX_OBJ), $(TEST_D)\rc2test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\rc2test.obj $(APP_EX_OBJ), $(TEST_D)\rc2test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\rc4test.exe: $(OBJ_D)\rc4test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\rc4test.obj $(APP_EX_OBJ), $(TEST_D)\rc4test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\rc4test.obj $(APP_EX_OBJ), $(TEST_D)\rc4test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\ideatest.exe: $(OBJ_D)\ideatest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\ideatest.obj $(APP_EX_OBJ), $(TEST_D)\ideatest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\ideatest.obj $(APP_EX_OBJ), $(TEST_D)\ideatest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\bftest.exe: $(OBJ_D)\bftest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\bftest.obj $(APP_EX_OBJ), $(TEST_D)\bftest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\bftest.obj $(APP_EX_OBJ), $(TEST_D)\bftest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\casttest.exe: $(OBJ_D)\casttest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\casttest.obj $(APP_EX_OBJ), $(TEST_D)\casttest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\casttest.obj $(APP_EX_OBJ), $(TEST_D)\casttest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\bntest.exe: $(OBJ_D)\bntest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\bntest.obj $(APP_EX_OBJ), $(TEST_D)\bntest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\bntest.obj $(APP_EX_OBJ), $(TEST_D)\bntest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\exptest.exe: $(OBJ_D)\exptest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\exptest.obj $(APP_EX_OBJ), $(TEST_D)\exptest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\exptest.obj $(APP_EX_OBJ), $(TEST_D)\exptest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\rsa_test.exe: $(OBJ_D)\rsa_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\rsa_test.obj $(APP_EX_OBJ), $(TEST_D)\rsa_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\rsa_test.obj $(APP_EX_OBJ), $(TEST_D)\rsa_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\dsatest.exe: $(OBJ_D)\dsatest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\dsatest.obj $(APP_EX_OBJ), $(TEST_D)\dsatest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\dsatest.obj $(APP_EX_OBJ), $(TEST_D)\dsatest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\dhtest.exe: $(OBJ_D)\dhtest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\dhtest.obj $(APP_EX_OBJ), $(TEST_D)\dhtest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\dhtest.obj $(APP_EX_OBJ), $(TEST_D)\dhtest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\ectest.exe: $(OBJ_D)\ectest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\ectest.obj $(APP_EX_OBJ), $(TEST_D)\ectest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\ectest.obj $(APP_EX_OBJ), $(TEST_D)\ectest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\ecdhtest.exe: $(OBJ_D)\ecdhtest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\ecdhtest.obj $(APP_EX_OBJ), $(TEST_D)\ecdhtest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\ecdhtest.obj $(APP_EX_OBJ), $(TEST_D)\ecdhtest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\ecdsatest.exe: $(OBJ_D)\ecdsatest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\ecdsatest.obj $(APP_EX_OBJ), $(TEST_D)\ecdsatest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\ecdsatest.obj $(APP_EX_OBJ), $(TEST_D)\ecdsatest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\randtest.exe: $(OBJ_D)\randtest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\randtest.obj $(APP_EX_OBJ), $(TEST_D)\randtest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\randtest.obj $(APP_EX_OBJ), $(TEST_D)\randtest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\evp_test.exe: $(OBJ_D)\evp_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\evp_test.obj $(APP_EX_OBJ), $(TEST_D)\evp_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\evp_test.obj $(APP_EX_OBJ), $(TEST_D)\evp_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\evp_extra_test.exe: $(OBJ_D)\evp_extra_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\evp_extra_test.obj $(APP_EX_OBJ), $(TEST_D)\evp_extra_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\evp_extra_test.obj $(APP_EX_OBJ), $(TEST_D)\evp_extra_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\verify_extra_test.exe: $(OBJ_D)\verify_extra_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\verify_extra_test.obj $(APP_EX_OBJ), $(TEST_D)\verify_extra_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\verify_extra_test.obj $(APP_EX_OBJ), $(TEST_D)\verify_extra_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\v3nametest.exe: $(OBJ_D)\v3nametest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\v3nametest.obj $(APP_EX_OBJ), $(TEST_D)\v3nametest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\v3nametest.obj $(APP_EX_OBJ), $(TEST_D)\v3nametest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\enginetest.exe: $(OBJ_D)\enginetest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\enginetest.obj $(APP_EX_OBJ), $(TEST_D)\enginetest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\enginetest.obj $(APP_EX_OBJ), $(TEST_D)\enginetest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\wp_test.exe: $(OBJ_D)\wp_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\wp_test.obj $(APP_EX_OBJ), $(TEST_D)\wp_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\wp_test.obj $(APP_EX_OBJ), $(TEST_D)\wp_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\srptest.exe: $(OBJ_D)\srptest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\srptest.obj $(APP_EX_OBJ), $(TEST_D)\srptest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\srptest.obj $(APP_EX_OBJ), $(TEST_D)\srptest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\ssltest.exe: $(OBJ_D)\ssltest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\ssltest.obj $(APP_EX_OBJ), $(TEST_D)\ssltest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\ssltest.obj $(APP_EX_OBJ), $(TEST_D)\ssltest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\heartbeat_test.exe: $(OBJ_D)\heartbeat_test.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\heartbeat_test.obj $(APP_EX_OBJ), $(TEST_D)\heartbeat_test.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\heartbeat_test.obj $(APP_EX_OBJ), $(TEST_D)\heartbeat_test.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\clienthellotest.exe: $(OBJ_D)\clienthellotest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\clienthellotest.obj $(APP_EX_OBJ), $(TEST_D)\clienthellotest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\clienthellotest.obj $(APP_EX_OBJ), $(TEST_D)\clienthellotest.exe,, $(L_LIBS) $(EX_LIBS)
+
+$(TEST_D)\sslv2conftest.exe: $(OBJ_D)\sslv2conftest.obj $(LIBS_DEP)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\sslv2conftest.obj $(APP_EX_OBJ), $(TEST_D)\sslv2conftest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(TEST_D)\igetest.exe: $(OBJ_D)\igetest.obj $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(OBJ_D)\igetest.obj $(APP_EX_OBJ), $(TEST_D)\igetest.exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(OBJ_D)\igetest.obj $(APP_EX_OBJ), $(TEST_D)\igetest.exe,, $(L_LIBS) $(EX_LIBS)
 
 $(O_SSL): $(SSLOBJ)
 	-$(RM) $(O_SSL)
@@ -3414,5 +3420,5 @@ $(O_CRYPTO): $(CRYPTOOBJ)
 !
 
 $(BIN_D)\$(E_EXE).exe: $(E_OBJ) $(LIBS_DEP)
-	$(LINK) $(LFLAGS) $(E_OBJ) $(APP_EX_OBJ), $(BIN_D)\$(E_EXE).exe,, $(L_LIBS) $(EX_LIBS)
+	$(LINK_CMD) $(LFLAGS) $(E_OBJ) $(APP_EX_OBJ), $(BIN_D)\$(E_EXE).exe,, $(L_LIBS) $(EX_LIBS)
 

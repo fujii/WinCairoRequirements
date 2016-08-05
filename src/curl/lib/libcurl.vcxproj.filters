@@ -28,19 +28,10 @@
     <ClCompile Include="curl_gethostname.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="curl_gssapi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="curl_memrchr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="curl_ntlm.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="curl_ntlm_core.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="curl_ntlm_msgs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="curl_ntlm_wb.c">
@@ -119,9 +110,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="http_negotiate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="http_negotiate_sspi.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="idn_win32.c">
@@ -274,9 +262,6 @@
     <ClCompile Include="curl_sasl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="curl_sasl_sspi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vtls\vtls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -320,6 +305,51 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vtls\schannel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="http_ntlm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="system_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\cleartext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\cram.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\digest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\digest_sspi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\krb5_gssapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\krb5_sspi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\ntlm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\ntlm_sspi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\oauth2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\spnego_gssapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\spnego_sspi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vauth\vauth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vtls\mbedtls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -378,13 +408,7 @@
     <ClInclude Include="curl_sspi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="curl_ntlm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="curl_ntlm_core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="curl_ntlm_msgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="curl_ntlm_wb.h">
@@ -598,6 +622,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="warnless.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="http_ntlm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="system_win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vauth\digest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vauth\ntlm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vauth\vauth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vtls\mbedtls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -180,7 +180,6 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     resObj = xmlXPtrEval(fragment, xptrctxt);
     xmlXPathFreeContext(xptrctxt);
 #endif
-    xmlFree(fragment);
 
     if (resObj == NULL)
 	goto out_fragment;
@@ -204,6 +203,7 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     }
 
     valuePush(ctxt, resObj);
+    xmlFree(fragment);
     return;
 
 out_object:
@@ -211,6 +211,7 @@ out_object:
 
 out_fragment:
     valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+    xmlFree(fragment);
 }
 
 /**
@@ -703,9 +704,9 @@ xsltGenerateIdFunction(xmlXPathParserContextPtr ctxt, int nargs){
 
     val = (long)((char *)cur - (char *)&base_address);
     if (val >= 0) {
-      sprintf((char *)str, "idp%ld", val);
+      snprintf((char *)str, sizeof(str), "idp%ld", val);
     } else {
-      sprintf((char *)str, "idm%ld", -val);
+      snprintf((char *)str, sizeof(str), "idm%ld", -val);
     }
     valuePush(ctxt, xmlXPathNewString(str));
 }

@@ -96,6 +96,9 @@ XSLTPUBFUN int XSLTCALL
 XSLTPUBFUN int XSLTCALL
 		xsltUnregisterExtModule	(const xmlChar * URI);
 
+XSLTPUBFUN void XSLTCALL
+		xsltUnregisterAllExtModules(void);
+
 XSLTPUBFUN void * XSLTCALL
 		xsltGetExtData		(xsltTransformContextPtr ctxt,
 					 const xmlChar *URI);

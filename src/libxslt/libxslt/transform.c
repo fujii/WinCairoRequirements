@@ -929,9 +929,9 @@ xsltCopyTextString(xsltTransformContextPtr ctxt, xmlNodePtr target,
 	}
 	copy = xmlNewTextLen(string, len);
     }
+    if (copy != NULL && target != NULL)
+	copy = xsltAddChild(target, copy);
     if (copy != NULL) {
-	if (target != NULL)
-	    copy = xsltAddChild(target, copy);
 	ctxt->lasttext = copy->content;
 	ctxt->lasttsize = len;
 	ctxt->lasttuse = len;
@@ -1320,6 +1320,11 @@ xsltShallowCopyElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
     if (copy != NULL) {
 	copy->doc = ctxt->output;
 	copy = xsltAddChild(insert, copy);
+        if (copy == NULL) {
+             xsltTransformError(ctxt, NULL, node,
+                "xsltShallowCopyElem: copy failed\n");
+             return (copy);
+        }
 
 	if (node->type == XML_ELEMENT_NODE) {
 	    /*
@@ -1653,6 +1658,11 @@ xsltCopyTreeInternal(xsltTransformContextPtr ctxt,
     if (copy != NULL) {
 	copy->doc = ctxt->output;
 	copy = xsltAddChild(insert, copy);
+        if (copy == NULL) {
+            xsltTransformError(ctxt, NULL, invocNode,
+            "xsltCopyTreeInternal: Copying of '%s' failed.\n", node->name);
+            return (copy);
+        }
 	/*
 	 * The node may have been coalesced into another text node.
 	 */
@@ -3704,8 +3714,7 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	    xmlDictReference(res->dict);
 	} else if (xmlStrEqual(method, (const xmlChar *) "xhtml")) {
 	    xsltTransformError(ctxt, NULL, inst,
-	     "xsltDocumentElem: unsupported method xhtml\n",
-		             style->method);
+	     "xsltDocumentElem: unsupported method xhtml\n");
 	    ctxt->type = XSLT_OUTPUT_HTML;
 	    res = htmlNewDocNoDtD(doctypeSystem, doctypePublic);
 	    if (res == NULL)
@@ -3725,8 +3734,8 @@ xsltDocumentElem(xsltTransformContextPtr ctxt, xmlNodePtr node,
 #endif
 	} else {
 	    xsltTransformError(ctxt, NULL, inst,
-			     "xsltDocumentElem: unsupported method %s\n",
-		             style->method);
+			     "xsltDocumentElem: unsupported method (%s)\n",
+		             method);
 	    goto error;
 	}
     } else {
@@ -4132,6 +4141,11 @@ xsltElement(xsltTransformContextPtr ctxt, xmlNodePtr node,
 	return;
     }
     copy = xsltAddChild(ctxt->insert, copy);
+    if (copy == NULL) {
+        xsltTransformError(ctxt, NULL, inst,
+            "xsl:element : xsltAddChild failed\n");
+        return;
+    }
 
     /*
     * Namespace
@@ -5958,8 +5972,7 @@ xsltApplyStylesheetInternal(xsltStylesheetPtr style, xmlDocPtr doc,
 #endif
         } else if (xmlStrEqual(method, (const xmlChar *) "xhtml")) {
 	    xsltTransformError(ctxt, NULL, (xmlNodePtr) doc,
-		"xsltApplyStylesheetInternal: unsupported method xhtml, using html\n",
-		style->method);
+		"xsltApplyStylesheetInternal: unsupported method xhtml, using html\n");
             ctxt->type = XSLT_OUTPUT_HTML;
             res = htmlNewDoc(doctypeSystem, doctypePublic);
             if (res == NULL)
@@ -5985,8 +5998,8 @@ xsltApplyStylesheetInternal(xsltStylesheetPtr style, xmlDocPtr doc,
 #endif
         } else {
 	    xsltTransformError(ctxt, NULL, (xmlNodePtr) doc,
-		"xsltApplyStylesheetInternal: unsupported method %s\n",
-		style->method);
+		"xsltApplyStylesheetInternal: unsupported method (%s)\n",
+		method);
             goto error;
         }
     } else {
